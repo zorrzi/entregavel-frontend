@@ -1,1 +1,1 @@
-# entregavel-frontend
+Dashboard de eventos com possibilidade de login e cadastro. Ao logar, o usuario consegue criar, editar e deletar eventos, além de vizualizalos em formato de card
