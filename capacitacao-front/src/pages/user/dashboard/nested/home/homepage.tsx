@@ -27,8 +27,15 @@ export const Home = () => {
     fetchEvents();
   }, []);
 
+  const handleEditSuccess = (updatedEvent: any) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event._id === updatedEvent._id ? { ...event, ...updatedEvent } : event
+      )
+    );
+  };
+
   const handleDeleteSuccess = (deletedEventId: string) => {
-    // Atualiza o estado removendo o evento excluído
     setEvents((prevEvents) => prevEvents.filter((event) => event._id !== deletedEventId));
   };
 
@@ -51,7 +58,8 @@ export const Home = () => {
               startTime={event.start_time}
               endTime={event.end_time}
               participants={event.participants}
-              onDeleteSuccess={() => handleDeleteSuccess(event._id)} // Passa callback para o Card
+              onEditSuccess={handleEditSuccess}
+              onDeleteSuccess={() => handleDeleteSuccess(event._id)}
             />
           ))}
         </CardContainer>
@@ -61,7 +69,6 @@ export const Home = () => {
     </HomeStyles>
   );
 };
-
 
 const HomeStyles = styled.div`
   background-color: #ecedf2;

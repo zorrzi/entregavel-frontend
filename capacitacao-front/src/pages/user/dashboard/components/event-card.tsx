@@ -13,7 +13,7 @@ interface EventCardProps {
   participants: string[];
   eventId: string;
   onDeleteSuccess?: () => void; // Callback para exclusão bem-sucedida
-  onEditSuccess?: () => void; // Callback para edição bem-sucedida
+  onEditSuccess: (updatedEvent: any) => void;
 }
 
 export const EventCard = ({

@@ -14,14 +14,13 @@ interface UpdateEventButtonProps {
     startTime: string;
     endTime: string;
   };
-  onEditSuccess?: () => void;
+  onEditSuccess?: (updatedEvent: any) => void; // Callback com os dados do evento atualizado
 }
 
-// Função para garantir que os horários estejam no formato correto
 const formatTime = (time: string): string => {
-  if (!time) return ""; // Retorna vazio se o valor for inválido
+  if (!time) return "";
   const [hours, minutes] = time.split(":");
-  return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`; // Garante o formato HH:MM
+  return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`;
 };
 
 export const UpdateEventButton: React.FC<UpdateEventButtonProps> = ({
@@ -31,7 +30,6 @@ export const UpdateEventButton: React.FC<UpdateEventButtonProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
 
-  // Formata os valores iniciais para garantir o formato correto
   const [formData, setFormData] = useState({
     ...currentData,
     startTime: formatTime(currentData.startTime),
@@ -49,7 +47,7 @@ export const UpdateEventButton: React.FC<UpdateEventButtonProps> = ({
       if (response.ok) {
         toast.success(data.message || "Evento atualizado com sucesso");
         setIsEditing(false);
-        if (onEditSuccess) onEditSuccess();
+        if (onEditSuccess) onEditSuccess({ ...formData, _id: eventId }); // Passa os dados atualizados
       } else {
         toast.error(data.message || "Erro ao atualizar o evento");
       }
@@ -64,10 +62,7 @@ export const UpdateEventButton: React.FC<UpdateEventButtonProps> = ({
       <EditIcon
         src="/edit.png"
         alt="Editar evento"
-        onClick={() => {
-          console.log("Dados de edição:", formData); // Debug
-          setIsEditing(true);
-        }}
+        onClick={() => setIsEditing(true)}
       />
       {isEditing && (
         <EditModal>
@@ -105,14 +100,14 @@ export const UpdateEventButton: React.FC<UpdateEventButtonProps> = ({
             />
             <Input
               name="startTime"
-              type="time" // Certifique-se de usar "time" aqui
+              type="time"
               value={formData.startTime}
               onChange={handleInputChange}
               placeholder="Horário de início"
             />
             <Input
               name="endTime"
-              type="time" // Certifique-se de usar "time" aqui
+              type="time"
               value={formData.endTime}
               onChange={handleInputChange}
               placeholder="Horário de término"
@@ -135,12 +130,12 @@ const EditIcon = styled.img`
   transition: opacity 0.3s, filter 0.3s;
 
   &:hover {
-    opacity: 0.8; /* Reduz ligeiramente a opacidade para indicar hover */
-    filter: brightness(1.2); /* Aumenta o brilho */
+    opacity: 0.8;
+    filter: brightness(1.2);
   }
 
   &:active {
-    filter: brightness(0.9); /* Reduz ligeiramente o brilho no clique */
+    filter: brightness(0.9);
   }
 `;
 
@@ -150,7 +145,7 @@ const EditModal = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -161,35 +156,27 @@ const ModalContent = styled.div`
   background: white;
   padding: 20px;
   border-radius: 10px;
-  width: 90%; /* Usa 90% da largura da tela */
-  max-width: 400px; /* Limita a largura máxima */
+  width: 90%;
+  max-width: 400px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centraliza horizontalmente */
+  align-items: center;
   gap: 15px;
-
-  /* Media query para telas muito pequenas */
-  @media (max-width: 480px) {
-    padding: 15px;
-    gap: 10px; /* Reduz o espaçamento entre os elementos */
-  }
 `;
 
 const Input = styled.input`
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  width: 100%; /* Usa todo o espaço disponível */
-  box-sizing: border-box; /* Inclui padding no cálculo da largura */
+  width: 100%;
 `;
 
 const Textarea = styled.textarea`
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  width: 100%; /* Usa todo o espaço disponível */
-  box-sizing: border-box; /* Inclui padding no cálculo da largura */
+  width: 100%;
   resize: none;
 `;
 
@@ -197,13 +184,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  width: 100%; /* Alinha os botões com os inputs */
-
-  /* Media query para botões em telas pequenas */
-  @media (max-width: 480px) {
-    flex-direction: column; /* Alinha os botões verticalmente */
-    gap: 5px; /* Reduz o espaçamento entre os botões */
-  }
+  width: 100%;
 `;
 
 const SaveButton = styled.button`
@@ -212,9 +193,8 @@ const SaveButton = styled.button`
   border: none;
   padding: 12px;
   border-radius: 5px;
-  width: 100%; /* Faz os botões ocuparem toda a largura */
+  width: 100%;
   flex: 1;
-  box-sizing: border-box;
   transition: background-color 0.3s;
 
   &:hover {
@@ -228,9 +208,8 @@ const CancelButton = styled.button`
   border: none;
   padding: 12px;
   border-radius: 5px;
-  width: 100%; /* Faz os botões ocuparem toda a largura */
+  width: 100%;
   flex: 1;
-  box-sizing: border-box;
   transition: background-color 0.3s;
 
   &:hover {
