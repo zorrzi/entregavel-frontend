@@ -8,31 +8,33 @@ export const Home = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const { data, response } = await GetAllEvents();
-
-        if (response.ok) {
-          setEvents(data.events);
-        } else {
-          toast.error(data.message || "Erro ao buscar eventos");
-        }
-      } catch (error) {
-        toast.error("Erro ao carregar eventos");
-      } finally {
-        setLoading(false);
+  const fetchEvents = async () => {
+    try {
+      const { data, response } = await GetAllEvents();
+      if (response.ok) {
+        setEvents(data.events);
+      } else {
+        toast.error(data.message || "Erro ao buscar eventos");
       }
-    };
+    } catch (error) {
+      toast.error("Erro ao carregar eventos");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchEvents();
-  }, [events]);
+  }, []);
+
+  const handleDeleteSuccess = (deletedEventId: string) => {
+    // Atualiza o estado removendo o evento excluído
+    setEvents((prevEvents) => prevEvents.filter((event) => event._id !== deletedEventId));
+  };
 
   return (
     <HomeStyles>
       <h1>Eventos Disponíveis</h1>
-
-      {/* Exibição Condicional */}
       {loading ? (
         <p>Carregando eventos...</p>
       ) : events.length > 0 ? (
@@ -49,6 +51,7 @@ export const Home = () => {
               startTime={event.start_time}
               endTime={event.end_time}
               participants={event.participants}
+              onDeleteSuccess={() => handleDeleteSuccess(event._id)} // Passa callback para o Card
             />
           ))}
         </CardContainer>
@@ -58,6 +61,7 @@ export const Home = () => {
     </HomeStyles>
   );
 };
+
 
 const HomeStyles = styled.div`
   background-color: #ecedf2;

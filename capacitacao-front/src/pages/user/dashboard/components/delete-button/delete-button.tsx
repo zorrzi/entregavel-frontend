@@ -10,12 +10,11 @@ interface DeleteEventButtonProps {
 
 export const DeleteEventButton: React.FC<DeleteEventButtonProps> = ({ eventId, onDeleteSuccess }) => {
   const handleDelete = async () => {
-
     try {
       const { data, response } = await deleteEvent(eventId);
       if (response.ok) {
         toast.success(data.message || "Evento excluído com sucesso");
-        if (onDeleteSuccess) onDeleteSuccess();
+        if (onDeleteSuccess) onDeleteSuccess(); // Apenas chama o callback se a exclusão for bem-sucedida
       } else {
         toast.error(data.message || "Erro ao excluir o evento");
       }
@@ -27,12 +26,13 @@ export const DeleteEventButton: React.FC<DeleteEventButtonProps> = ({ eventId, o
 
   return (
     <DeleteIcon
-      src="/trash.png" // Caminho para a imagem no diretório `public`
+      src="/trash.png"
       alt="Excluir evento"
       onClick={handleDelete}
     />
   );
 };
+
 
 const DeleteIcon = styled.img`
   width: 24px;
